@@ -6,36 +6,33 @@ import {
   useColorModeValue,
   Link,
   FlexProps,
-  Drawer,
-  DrawerContent,
   Button,
   useColorMode,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { SunIcon, MoonIcon } from "@chakra-ui/icons";
+import { Link as RLink } from "@tanstack/react-location";
+import HorizontalCollapse from "./components/horizontal-collapse";
 
 interface SidebarProps {
   monitors: string[];
+  children: React.ReactNode;
 }
 
-export default function Sidebar({ monitors }: SidebarProps) {
+export default function Sidebar({ monitors, children }: SidebarProps) {
+  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent
-        monitors={monitors}
-        display={{ base: "none", md: "block" }}
-      />
-      <Drawer
-        autoFocus={false}
-        isOpen
-        placement="left"
-        returnFocusOnClose={false}
-        size="full"
-        onClose={() => {}}
-      >
-        <DrawerContent>
-          <SidebarContent monitors={monitors} />
-        </DrawerContent>
-      </Drawer>
+    <Box
+      minH="100vh"
+      minW="100vw"
+      bg={useColorModeValue("gray.100", "gray.900")}
+    >
+      <HorizontalCollapse isOpen={isOpen}>
+        <SidebarContent monitors={monitors} />
+      </HorizontalCollapse>
+      {children}
+      <Button onClick={onToggle}>Toggle</Button>
     </Box>
   );
 }
@@ -46,15 +43,19 @@ interface SidebarContentProps extends BoxProps {
 
 function SidebarContent({ monitors, ...rest }: SidebarContentProps) {
   const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <Box
       bg={useColorModeValue("whiteAlpha.900", "gray.800")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
       {...rest}
+      w={350}
+      pl={50}
+      ml={-50}
+      style={{ position: "relative", right: 0 }}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
@@ -62,7 +63,9 @@ function SidebarContent({ monitors, ...rest }: SidebarContentProps) {
         </Text>
       </Flex>
       {monitors.map((link) => (
-        <NavItem key={link}>{link}</NavItem>
+        <NavItem key={link} to={link}>
+          {link}
+        </NavItem>
       ))}
       <Button onClick={toggleColorMode}>
         {colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
@@ -72,30 +75,30 @@ function SidebarContent({ monitors, ...rest }: SidebarContentProps) {
 }
 
 interface NavItemProps extends FlexProps {
+  to: string;
   children: React.ReactNode;
 }
-const NavItem = ({ children, ...rest }: NavItemProps) => {
+
+const NavItem = ({ to, children, ...rest }: NavItemProps) => {
   return (
-    <Link
-      href="#"
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "cyan.900",
-          color: "white",
-        }}
-        {...rest}
-      >
-        {children}
-      </Flex>
-    </Link>
+    <RLink to={`/displays/${to}`}>
+      <Link style={{ textDecoration: "none" }} _focus={{ boxShadow: "none" }}>
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+          _hover={{
+            bg: "cyan.900",
+            color: "white",
+          }}
+          {...rest}
+        >
+          {children}
+        </Flex>
+      </Link>
+    </RLink>
   );
 };

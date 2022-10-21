@@ -14,6 +14,7 @@
     "@chakra-ui/react": "^2.3.6",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@tanstack/react-location": "^3.7.4",
     "@tauri-apps/api": "^1.1.0",
     "framer-motion": "^7.6.1",
     "react": "^18.2.0",
