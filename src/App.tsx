@@ -1,18 +1,14 @@
-import {
-  MakeGenerics,
-  Outlet,
-  ReactLocation,
-  Router,
-} from "@tanstack/react-location";
-import Index from "./src/routes";
-import DisplayIndex from "./src/routes/display-index";
-import Sidebar from "./src/sidebar";
+import type { MakeGenerics } from '@tanstack/react-location';
+import { Outlet, ReactLocation, Router } from '@tanstack/react-location';
+import Index from './src/routes';
+import DisplayIndex from './src/routes/display-index';
+import Sidebar from './src/sidebar';
 
 const location = new ReactLocation<LocationGenerics>();
 
-type Display = {
+interface Display {
   id: string;
-};
+}
 
 export type LocationGenerics = MakeGenerics<{
   LoaderData: {
@@ -31,12 +27,12 @@ function App() {
     <Router
       location={location}
       routes={[
-        { path: "/", element: <Index /> },
+        { path: '/', element: <Index /> },
         {
-          path: "displays",
+          path: 'displays',
           children: [
             {
-              path: ":displayId",
+              path: ':displayId',
               element: <DisplayIndex />,
               loader: ({ params: { displayId } }) => ({
                 display: { id: displayId },
@@ -46,7 +42,7 @@ function App() {
         },
       ]}
     >
-      <Sidebar monitors={["eDP-1", "HDMI-4"]}>
+      <Sidebar monitors={['eDP-1', 'HDMI-4']}>
         <Outlet />
       </Sidebar>
     </Router>

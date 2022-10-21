@@ -1,5 +1,5 @@
-import { useMatch } from "@tanstack/react-location";
-import { LocationGenerics } from "../../App";
+import { useMatch } from '@tanstack/react-location';
+import type { LocationGenerics } from '../../App';
 
 export default function Index() {
   const {
