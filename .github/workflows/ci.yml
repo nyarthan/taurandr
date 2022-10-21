@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+  pull_request:
+    branches: [master]
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🕵 Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '50'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2.0.1
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: ⚙️ Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'pnpm'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile ${{ env.PNPM_INSTALL_ARGS }}
+
+      - name: 📄 Check format
+        run: pnpm format:check
